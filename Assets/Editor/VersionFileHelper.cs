@@ -15,7 +15,7 @@ public class VersionFileHelper
     {
         List<string> allAssetBundleFullPath = new List<string>();
         List<Define.VersionInfo> versionInfoList = new List<Define.VersionInfo>();
-        FileHelper.GetAllFileFullPath(Define.StreamingAssetsRoot, ref allAssetBundleFullPath, ".unity3d");
+        FileHelper.GetAllFileFullPath(Define.StreamingAssetsRoot, ref allAssetBundleFullPath, new string[]{".unity3d",".lua"});
         for (int i = 0; i < allAssetBundleFullPath.Count; i++)
         {
             string fullName = allAssetBundleFullPath[i];

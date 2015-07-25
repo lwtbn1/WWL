@@ -7,20 +7,21 @@ using LitJson;
 public class FileHelper
 {
 
-    public static void GetAllFileFullPath(string rootPath, ref List<string> prefabsFullPaths, string formStr)
+    public static void GetAllFileFullPath(string rootPath, ref List<string> prefabsFullPaths, string[] formStr)
     {
+        if(formStr == null || formStr.Length == 0)
+            return;
         string[] files = Directory.GetFiles(rootPath);
         if (files != null)
         {
             for (int i = 0; i < files.Length; i++)
             {
-                if (files[i].EndsWith(formStr))
+                for (int j = 0; j < formStr.Length; j++)
                 {
-                    prefabsFullPaths.Add(files[i].Replace("/", "\\"));
+                    if (files[i].EndsWith(formStr[j]))
+                        prefabsFullPaths.Add(files[i].Replace("/", "\\"));
                 }
-
             }
-
         }
 
         string[] directories = Directory.GetDirectories(rootPath);
@@ -87,6 +88,26 @@ public class FileHelper
             return;
         for (int i = 0; i < tmp.Count; i++)
             list.Add(tmp[i].fileName, tmp[i].md5);
+    }
+
+    public static string ReadLuaScriptFile(string filePath)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+        StreamReader sr = new StreamReader(fs);
+
+        string str = "";
+        while ((str = sr.ReadLine()) != null)
+        {
+            sb.Append(str + "\n");
+        }
+
+
+        sr.Close();
+        fs.Close();
+
+        return sb.ToString();
     }
 }
 

@@ -10,6 +10,7 @@ public class UpdatingManager : MonoBehaviour
     delegate void AfterDownloadOneFileDelegate(object parma);           //下载资源之后回调函数
     delegate void AfterDownloadDelegate(object parma);           //下载资源之后回调函数
 
+    Object luaScriptObject;
     // Use this for initialization
     void Start()
     {
@@ -22,7 +23,7 @@ public class UpdatingManager : MonoBehaviour
         List<string> needToDownloadFileList = new List<string>();
         yield return StartCoroutine(CheckDownloadFiles(needToDownloadFileList));
 
-        StartCoroutine(StartToDownLoad(needToDownloadFileList, AfterDownloadOneFile, AfterDownload));
+        StartCoroutine(StartToDownLoad(needToDownloadFileList,BeforeDownloadOneFile, AfterDownloadOneFile, AfterDownload));
     }
     IEnumerator CheckDownloadFiles(List<string> needToDownloadFileList)
     {
@@ -49,15 +50,18 @@ public class UpdatingManager : MonoBehaviour
         }
         
     }
-    IEnumerator StartToDownLoad(List<string> needToDownloadFile, AfterDownloadOneFileDelegate afterDownloadOneFile, AfterDownloadDelegate afterDownload)
+    IEnumerator StartToDownLoad(List<string> needToDownloadFile , BeforeDownloadOneFileDelegate beforeDownload, AfterDownloadOneFileDelegate afterDownloadOneFile, AfterDownloadDelegate afterDownload)
     {
+        if (beforeDownload != null)
+            beforeDownload(null);
         for (int i = 0; i < needToDownloadFile.Count; i++)
         {
             yield return StartCoroutine(DownLoadFromServer(needToDownloadFile[i], OnDownloadOneFile));
             afterDownloadOneFile(null);
         }
         yield return new WaitForSeconds(0.1f);
-        afterDownload(null);
+        if (afterDownload != null)
+            afterDownload(null);
     }
 
     IEnumerator DownLoadFromServer(string fileName, OnDownloadOneFileDelegate onDownloadOneFile)
@@ -76,15 +80,31 @@ public class UpdatingManager : MonoBehaviour
         }
         else if (www.isDone)
         {
-            byte[] bytes = www.bytes;
-            string dir = persistantFullPath.Substring(0, persistantFullPath.LastIndexOf("/"));
-            Debug.Log(dir);
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-            FileStream file = new FileStream(persistantFullPath, FileMode.Create, FileAccess.Write);
-            StreamWriter sw = new StreamWriter(file);
-            sw.Write(bytes);
-            sw.Close();
+            if (fileName.EndsWith(".unity3d"))
+            {
+                byte[] bytes = www.bytes;
+                string dir = persistantFullPath.Substring(0, persistantFullPath.LastIndexOf("/"));
+                Debug.Log(dir);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                FileStream file = new FileStream(persistantFullPath, FileMode.Create, FileAccess.Write);
+                StreamWriter sw = new StreamWriter(file);
+                sw.Write(bytes);
+                sw.Close();
+            }
+            else if (fileName.EndsWith(".lua"))
+            {
+                string luaScript = www.text;
+                string dir = persistantFullPath.Substring(0, persistantFullPath.LastIndexOf("/"));
+                Debug.Log(dir);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                FileStream file = new FileStream(persistantFullPath, FileMode.Create, FileAccess.Write);
+                StreamWriter sw = new StreamWriter(file);
+                sw.Write(luaScript);
+                sw.Close();
+            }
+            
         }
         yield return 1;
     }
@@ -119,7 +139,7 @@ public class UpdatingManager : MonoBehaviour
 
     void BeforeDownloadOneFile(object param)
     {
-
+        luaScriptObject = Resources.Load("manager/LuaScriptManager");
     }
     void OnDownloadOneFile(object param)
     {
@@ -133,6 +153,6 @@ public class UpdatingManager : MonoBehaviour
 
     void AfterDownload(object param)
     {
-
+        Instantiate(luaScriptObject);
     }
 }

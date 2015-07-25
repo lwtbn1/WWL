@@ -16,7 +16,6 @@ public class CallLuaFunction_02 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         LuaScriptMgr mgr = new LuaScriptMgr();
-        
         mgr.DoString(script);
 
         // Get the function object

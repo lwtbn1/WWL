@@ -18,7 +18,7 @@ public class AssetBundleUtil
         }
 
         List<string> prefabFullPath = new List<string>();
-        FileHelper.GetAllFileFullPath(Define.PrefabsRootPath, ref prefabFullPath, ".prefab");
+        FileHelper.GetAllFileFullPath(Define.PrefabsRootPath, ref prefabFullPath, new string[]{".prefab"});
         for (int i = 0; i < prefabFullPath.Count; i++)
         {
             string fullPath = prefabFullPath[i];
