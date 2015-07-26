@@ -16,6 +16,10 @@ updateSceneMain = {
 		print("lateUpdate....")
 	end,
 
-
+	
 }
+updateSceneMain.conf = {
+	"People.lua",
+}
+
 return updateSceneMain

@@ -43,7 +43,7 @@ public class Define
     public static string StreamingAssetsRoot = Application.dataPath + "/StreamingAssets/";
     public static string VersionFileFullPath = Application.persistentDataPath + "/" + PlatformStr + "/" + "version.dat";
     public static string VersionFileName = PlatformStr + "/" + "version.dat";
-    public static string MainLuaScriptPath = Application.persistentDataPath + "/" + Define.PlatformStr + "/" + "_scriptLua/" + Application.loadedLevelName + "/" + "main.lua";
+    public static string LuaScriptPathRoot = Application.persistentDataPath + "/" + Define.PlatformStr + "/" + "_scriptLua/" + Application.loadedLevelName ;
     public struct VersionInfo
     {
         public string fileName;
