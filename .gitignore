@@ -41,3 +41,10 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+#排除文件目录
+Temp
+Library
+obj
+#排除指定的后缀文件
+*.csproj
+*.sln
